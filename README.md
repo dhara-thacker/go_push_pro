@@ -42,6 +42,11 @@ func main() {
 }
 ```
 
+Here APNS Environment can be any of the 2 below:
+
+1) development
+2) production
+
 ### Send iOS Push using P8 (Work in progress)
 
 ```
@@ -50,6 +55,11 @@ package main
 import "github.com/dhara-thacker/go_push_pro"
 
 func main() {
-	go_push_pro.SendIosPushWithP8(pem_file_path, message, device_token, key_id, team_id)
+	go_push_pro.SendIosPushWithP8(pem_file_path, message, device_token, key_id, team_id, topic, push_mode)
 }
 ```
+
+Here push Mode can be any of the 2 below:
+
+1) development
+2) production
