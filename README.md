@@ -18,7 +18,7 @@ To install the package in your system, run this command in your temrinal:
 go get github.com/dhara-thacker/go_push_pro
 ```
 
-## Send Android Push with FCM
+### Send Android Push with FCM
 
 ```
 package main
