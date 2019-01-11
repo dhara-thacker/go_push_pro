@@ -89,7 +89,7 @@ func initiateIosPushWithP8(file_path string, message string, device_token string
 		TeamID: teamID,
 	}
 
-	if apns_environment == "development" || apns_environment == "Development" {
+	if push_mode == "development" || push_mode == "Development" {
 		client := apns2.NewTokenClient(token)
 	} else {
 		client := apns2.NewTokenClient(token).Production()
