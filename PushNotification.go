@@ -69,7 +69,7 @@ func initiateIosPushWithPem(pem_path string, message string, device_token string
 	fmt.Println("Error:", resp.Error)
 }
 
-func initiateIosPushWithP8(file_path string, message string, device_token string, keyID string, teamID string, topic string) {
+func initiateIosPushWithP8(file_path string, message string, device_token string, keyID string, teamID string, topic string, push_mode string) {
 
 	notification := &apns2.Notification{}
 	notification.DeviceToken = device_token
@@ -89,7 +89,12 @@ func initiateIosPushWithP8(file_path string, message string, device_token string
 		TeamID: teamID,
 	}
 
-	client := apns2.NewTokenClient(token)
+	if apns_environment == "development" || apns_environment == "Development" {
+		client := apns2.NewTokenClient(token)
+	} else {
+		client := apns2.NewTokenClient(token).Production()
+	}
+
 	res, err := client.Push(notification)
 	if err != nil {
 		log.Fatal("Error:", err)
@@ -106,8 +111,8 @@ func SendIosPushWithPem(pem_path string, message string, device_token string, ap
 	initiateIosPushWithPem(pem_path, message, device_token, apns_environment)
 }
 
-func SendIosPushWithP8(file_path string, message string, device_token string, key_id string, team_id string, topic string) {
-	initiateIosPushWithP8(file_path, message, device_token, key_id, team_id, topic)
+func SendIosPushWithP8(file_path string, message string, device_token string, key_id string, team_id string, topic string, push_mode string) {
+	initiateIosPushWithP8(file_path, message, device_token, key_id, team_id, topic, push_mode)
 }
 
 // func main() {
