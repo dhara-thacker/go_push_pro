@@ -91,11 +91,12 @@ func initiateIosPushWithP8(file_path string, message string, device_token string
 
 	if push_mode == "development" || push_mode == "Development" {
 		client := apns2.NewTokenClient(token)
+		res, err := client.Push(notification)
 	} else {
 		client := apns2.NewTokenClient(token).Production()
+		res, err := client.Push(notification)
 	}
 
-	res, err := client.Push(notification)
 	if err != nil {
 		log.Fatal("Error:", err)
 	}
