@@ -47,7 +47,7 @@ Here APNS Environment can be any of the 2 below:
 1) development
 2) production
 
-### Send iOS Push using P8 (Work in progress)
+### Send iOS Push using P8
 
 ```
 package main
