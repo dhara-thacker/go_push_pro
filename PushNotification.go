@@ -92,16 +92,21 @@ func initiateIosPushWithP8(file_path string, message string, device_token string
 	if push_mode == "development" || push_mode == "Development" {
 		client := apns2.NewTokenClient(token)
 		res, err := client.Push(notification)
+		if err != nil {
+			log.Fatal("Error:", err)
+		}
+
+		fmt.Printf("%v %v %v\n", res.StatusCode, res.ApnsID, res.Reason)
 	} else {
 		client := apns2.NewTokenClient(token).Production()
 		res, err := client.Push(notification)
+		if err != nil {
+			log.Fatal("Error:", err)
+		}
+
+		fmt.Printf("%v %v %v\n", res.StatusCode, res.ApnsID, res.Reason)
 	}
 
-	if err != nil {
-		log.Fatal("Error:", err)
-	}
-
-	fmt.Printf("%v %v %v\n", res.StatusCode, res.ApnsID, res.Reason)
 }
 
 func SendAndroidPush(device_token string, message string, fcm_key string) {
