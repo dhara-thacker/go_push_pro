@@ -38,7 +38,7 @@ package main
 import "github.com/dhara-thacker/go_push_pro"
 
 func main() {
-	go_push_pro.SendIosPushWithPem(pem_file_path, message, device_token)
+	go_push_pro.SendIosPushWithPem(pem_file_path, message, device_token, apns_environment)
 }
 ```
 
