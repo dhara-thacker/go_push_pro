@@ -4,14 +4,13 @@ import (
 	// "all_push_pro/common"
 
 	"fmt"
-	"log"
 	"path/filepath"
 
 	"github.com/NaySoftware/go-fcm"
 	"github.com/anachronistic/apns"
-	"github.com/sideshow/apns2"
-	"github.com/sideshow/apns2/certificate"
-	"github.com/sideshow/apns2/token"
+	// "github.com/sideshow/apns2"
+	// "github.com/sideshow/apns2/certificate"
+	// "github.com/sideshow/apns2/token"
 )
 
 func initiateAndroidPush(device_token string, message string, fcm_key string) {
@@ -37,7 +36,7 @@ func initiateAndroidPush(device_token string, message string, fcm_key string) {
 	// })
 }
 
-func initiateIosPushWithPem(pem_path string, message string, device_token string) {
+func initiateIosPushWithPem(pem_path string, message string, device_token string, apns_environment string) {
 	// try.This(func() {
 	// Certificate_path, patherr := filepath.Abs(pem_path)
 	Certificate_path, patherr := filepath.Abs(pem_path)
@@ -54,7 +53,11 @@ func initiateIosPushWithPem(pem_path string, message string, device_token string
 	pn.AddPayload(payload)
 
 	var client *apns.Client
-	client = apns.NewClient("gateway.push.apple.com:2195", Certificate_path, Certificate_path)
+	if apns_environment == "development" || apns_environment == "Development" {
+		client = apns.NewClient("gateway.sandbox.push.apple.com:2195", Certificate_path, Certificate_path)
+	} else {
+		client = apns.NewClient("gateway.push.apple.com:2195", Certificate_path, Certificate_path)
+	}
 	resp := client.Send(pn)
 
 	alert, _ := pn.PayloadString()
@@ -63,73 +66,46 @@ func initiateIosPushWithPem(pem_path string, message string, device_token string
 	fmt.Println("Error:", resp.Error)
 }
 
-func initiateIosPushWithP12(file_path string, message string, device_token string) {
-	// try.This(func() {
-	// Certificate_path, patherr := filepath.Abs(pem_path)
-	cert, err := certificate.FromP12File(file_path, "")
-	if err != nil {
-		log.Fatal("Cert Error:", err)
-	}
-
-	notification := &apns2.Notification{}
-	notification.DeviceToken = device_token
-	notification.Topic = "com.sideshow.Apns2"
-	notification.Payload = []byte(`{"aps":{"alert":"` + message + `"}}`) // See Payload section below
-
-	client := apns2.NewClient(cert).Production()
-	res, err := client.Push(notification)
-
-	if err != nil {
-		log.Fatal("Error:", err)
-	}
-
-	fmt.Printf("%v %v %v\n", res.StatusCode, res.ApnsID, res.Reason)
-}
-
-func initiateIosPushWithP8(file_path string, message string, device_token string, keyID string, teamID string) {
-
-	notification := &apns2.Notification{}
-	notification.DeviceToken = device_token
-	notification.Topic = "com.sideshow.Apns2"
-	notification.Payload = []byte(`{"aps":{"alert":"` + message + `"}}`)
-
-	authKey, err := token.AuthKeyFromFile(file_path)
-	if err != nil {
-		log.Fatal("token error:", err)
-	}
-
-	token := &token.Token{
-		AuthKey: authKey,
-		// KeyID from developer account (Certificates, Identifiers & Profiles -> Keys)
-		KeyID: keyID,
-		// TeamID from developer account (View Account -> Membership)
-		TeamID: teamID,
-	}
-
-	client := apns2.NewTokenClient(token)
-	res, err := client.Push(notification)
-	if err != nil {
-		log.Fatal("Error:", err)
-	}
-
-	fmt.Printf("%v %v %v\n", res.StatusCode, res.ApnsID, res.Reason)
-}
+// func initiateIosPushWithP8(file_path string, message string, device_token string, keyID string, teamID string) {
+//
+// 	notification := &apns2.Notification{}
+// 	notification.DeviceToken = device_token
+// 	notification.Topic = "com.sideshow.Apns2"
+// 	notification.Payload = []byte(`{"aps":{"alert":"` + message + `"}}`)
+//
+// 	authKey, err := token.AuthKeyFromFile(file_path)
+// 	if err != nil {
+// 		log.Fatal("token error:", err)
+// 	}
+//
+// 	token := &token.Token{
+// 		AuthKey: authKey,
+// 		// KeyID from developer account (Certificates, Identifiers & Profiles -> Keys)
+// 		KeyID: keyID,
+// 		// TeamID from developer account (View Account -> Membership)
+// 		TeamID: teamID,
+// 	}
+//
+// 	client := apns2.NewTokenClient(token)
+// 	res, err := client.Push(notification)
+// 	if err != nil {
+// 		log.Fatal("Error:", err)
+// 	}
+//
+// 	fmt.Printf("%v %v %v\n", res.StatusCode, res.ApnsID, res.Reason)
+// }
 
 func SendAndroidPush(device_token string, message string, fcm_key string) {
 	initiateAndroidPush(device_token, message, fcm_key)
 }
 
-func SendIosPushWithPem(pem_path string, message string, device_token string) {
-	initiateIosPushWithPem(pem_path, message, device_token)
+func SendIosPushWithPem(pem_path string, message string, device_token string, apns_environment string) {
+	initiateIosPushWithPem(pem_path, message, device_token, apns_environment)
 }
 
-func SendIosPushWithP12(file_path string, message string, device_token string) {
-	initiateIosPushWithP12(file_path, message, device_token)
-}
-
-func SendIosPushWithP8(file_path string, message string, device_token string, key_id string, team_id string) {
-	initiateIosPushWithP8(file_path, message, device_token, key_id, team_id)
-}
+// func SendIosPushWithP8(file_path string, message string, device_token string, key_id string, team_id string) {
+// 	initiateIosPushWithP8(file_path, message, device_token, key_id, team_id)
+// }
 
 // func main() {
 // 	SendIosPush("home/sotsys-229/rails_projects/interstride_app/interstride/config/pushcert/production_12_dec.pem", "HI There", "40ae989435eea69c8b724de427874aaf6f375492cc5b2d46b4db5e1ebeb53400")
