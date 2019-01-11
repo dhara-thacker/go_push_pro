@@ -69,11 +69,11 @@ func initiateIosPushWithPem(pem_path string, message string, device_token string
 	fmt.Println("Error:", resp.Error)
 }
 
-func initiateIosPushWithP8(file_path string, message string, device_token string, keyID string, teamID string) {
+func initiateIosPushWithP8(file_path string, message string, device_token string, keyID string, teamID string, topic string) {
 
 	notification := &apns2.Notification{}
 	notification.DeviceToken = device_token
-	notification.Topic = "com.sideshow.Apns2"
+	notification.Topic = topic
 	notification.Payload = []byte(`{"aps":{"alert":"` + message + `"}}`)
 
 	authKey, err := token.AuthKeyFromFile(file_path)
@@ -106,8 +106,8 @@ func SendIosPushWithPem(pem_path string, message string, device_token string, ap
 	initiateIosPushWithPem(pem_path, message, device_token, apns_environment)
 }
 
-func SendIosPushWithP8(file_path string, message string, device_token string, key_id string, team_id string) {
-	initiateIosPushWithP8(file_path, message, device_token, key_id, team_id)
+func SendIosPushWithP8(file_path string, message string, device_token string, key_id string, team_id string, topic string) {
+	initiateIosPushWithP8(file_path, message, device_token, key_id, team_id, topic)
 }
 
 // func main() {
